@@ -6,6 +6,7 @@ import alaaesam.tdb.repository.jpa.UserJPARepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -14,6 +15,7 @@ public class UserRepositoryImpl implements UserRepository {
     private final UserJPARepository userJPARepository;
     @Override
     public User insert(User user) {
+        user.setCreatedOn(LocalDateTime.now());
         return userJPARepository.save(user);
     }
 

@@ -6,6 +6,7 @@ import alaaesam.tdb.lib.error.AppException;
 import alaaesam.tdb.model.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,17 +30,17 @@ public class UserDetailsSecurityService implements UserDetailsService {
         return new UserDetails() {
             @Override
             public Collection<? extends GrantedAuthority> getAuthorities() {
-                return List.of();
+                return List.of(new SimpleGrantedAuthority(user.getRole().name()));
             }
 
             @Override
             public String getPassword() {
-                return user.getUserName();
+                return user.getPassword();
             }
 
             @Override
             public String getUsername() {
-                return user.getPassword();
+                return user.getUserName();
             }
         };
     }

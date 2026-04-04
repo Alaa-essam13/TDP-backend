@@ -1,0 +1,371 @@
+openapi: 3.0.3
+
+info:
+  version: "1.0"
+  title: "Travel Destination Planner"
+  contact:
+    email: "alaa.esam.dev@gmail.com"
+    name: "Alaa Essam"
+
+servers:
+  - url: http://localhost:7001/
+
+tags:
+  - name: Auth
+  - name: Destination
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register New User
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterUserDTO'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterUserVTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUserDTO'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginUserVTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /destinations:
+    get:
+      tags:
+        - Destination
+      summary: Get All Destinations for Admin
+      operationId: getDestinations
+      parameters:
+        - $ref: '#/components/parameters/QPPageSize'
+        - $ref: '#/components/parameters/QPPageNum'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DestinationsResultSet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /destinations/{destinationId}:
+    get:
+      tags:
+        - Destination
+      description: get destination from approved list
+      operationId: getDestination
+      parameters:
+        - $ref: '#/components/parameters/PPDestinationId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DestinationVTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+    delete:
+      tags:
+        - Destination
+      description: delete destination from approved list
+      operationId: deleteDestination
+      parameters:
+        - $ref: '#/components/parameters/PPDestinationId'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /destinations/approve:
+    post:
+      tags:
+        - Destination
+      description: add destinations to approved list
+      operationId: approveDestinations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/DestinationDTO'
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /destinations/approved:
+    get:
+      tags:
+        - Destination
+      description: Get All Approved Destinations
+      operationId: getApprovedDestinations
+      parameters:
+        - $ref: '#/components/parameters/QPPageSize'
+        - $ref: '#/components/parameters/QPPageNum'
+        - $ref: '#/components/parameters/QPQuickSearch'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovedDestinationResultSet'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+components:
+  responses:
+    Created:
+      description: Created
+    NoContent:
+      description: NoContent
+    BadRequest:
+      description: BadRequest
+
+  parameters:
+    PPDestinationId:
+      name: destinationId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      example: 12
+
+    QPPageSize:
+      name: size
+      in: query
+      required: false
+      description: page size
+      schema:
+        type: integer
+
+    QPPageNum:
+      name: page
+      in: query
+      required: false
+      description: page number
+      schema:
+        type: integer
+
+    QPQuickSearch:
+      name: search
+      in: query
+      required: false
+      description: quick search
+      schema:
+        type: string
+
+  schemas:
+    RegisterUserDTO:
+      type: object
+      required:
+        - userName
+        - password
+        - email
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        userName:
+          type: string
+        password:
+          type: string
+          format: password
+        email:
+          type: string
+          format: email
+        mobileNumber:
+          type: string
+
+    LoginUserDTO:
+      type: object
+      required:
+        - userName
+        - password
+      properties:
+        userName:
+          type: string
+        password:
+          type: string
+          format: password
+
+    LoginUserVTO:
+      type: object
+      properties:
+        token:
+          type: string
+
+    RegisterUserVTO:
+      type: object
+      properties:
+        token:
+          type: string
+
+    NativeNameVTO:
+      type: object
+      properties:
+        official:
+          type: string
+        common:
+          type: string
+
+    NameVTO:
+      type: object
+      properties:
+        common:
+          type: string
+        official:
+          type: string
+        nativeName:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/NativeNameVTO'
+
+    CurrencyVTO:
+      type: object
+      properties:
+        name:
+          type: string
+        symbol:
+          type: string
+
+    DestinationItemVTO:
+      type: object
+      properties:
+        flag:
+          type: string
+        name:
+          $ref: '#/components/schemas/NameVTO'
+        currencies:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/CurrencyVTO'
+        capital:
+          type: array
+          items:
+            type: string
+        region:
+          type: string
+        population:
+          type: integer
+          format: int64
+        approved:
+          type: boolean
+
+    DestinationsResultSet:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DestinationItemVTO'
+        total:
+          type: integer
+
+    DestinationVTO:
+      type: object
+      properties:
+        flag:
+          type: string
+        name:
+          type: string
+        capitals:
+          type: array
+          items:
+            type: string
+        currencies:
+          type: array
+          items:
+            type: string
+        region:
+          type: string
+        population:
+          type: integer
+          format: int64
+        approved:
+          type: boolean
+
+    DestinationDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        region:
+          type: string
+        flag:
+          type: string
+        population:
+          type: integer
+          format: int64
+        capitals:
+          type: array
+          items:
+            type: string
+        currencies:
+          type: array
+          items:
+            type: string
+
+    ApprovedDestinationListItem:
+      type: object
+      properties:
+        name:
+          type: string
+        region:
+          type: string
+        flag:
+          type: string
+        population:
+          type: integer
+          format: int64
+        capital:
+          type: array
+          items:
+            type: string
+        currencies:
+          type: array
+          items:
+            type: string
+
+    ApprovedDestinationResultSet:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApprovedDestinationListItem'
+        total:
+          type: integer
+          format: int64

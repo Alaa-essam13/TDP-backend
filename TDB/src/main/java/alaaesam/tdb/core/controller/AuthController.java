@@ -25,7 +25,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginUserVTO> register(@Valid @RequestBody LoginUserDTO request) {
+    public ResponseEntity<LoginUserVTO> login(@Valid @RequestBody LoginUserDTO request) {
         return ResponseEntity.ok(authService.login(request));
     }
 }

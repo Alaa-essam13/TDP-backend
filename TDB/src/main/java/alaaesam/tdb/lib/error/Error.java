@@ -12,6 +12,8 @@ public enum Error {
     UNAUTHORIZED("You are not authorized", HttpStatus.UNAUTHORIZED),
     INTERNAL_ERROR("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR),
     ROLE_NOT_FOUND("role not found", HttpStatus.NOT_FOUND),
+    DESTINATION_NOT_FOUND("destination not found", HttpStatus.NOT_FOUND),
+    DESTINATION_ALREADY_EXIST("destination {0} Already Exist", HttpStatus.BAD_REQUEST),
     ;
     private final String message;
     private final HttpStatus status;
@@ -21,11 +23,4 @@ public enum Error {
         this.status = status;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public HttpStatus getStatus() {
-        return status;
-    }
 }

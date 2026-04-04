@@ -35,6 +35,7 @@ public class AuthServiceImpl implements AuthService {
             throw new AppException(USER_NOT_FOUND);
         }
         Map<String, Object> claims = new HashMap<>();
+        claims.put("role",user.getRole().name());
         String token = jwtService.generateToken(loginUserDTO.getUserName(), claims);
         return LoginUserVTO.builder().token(token).build();
     }
@@ -55,6 +56,7 @@ public class AuthServiceImpl implements AuthService {
         usr.setPassword(passwordEncoder.encode(registerUserDTO.getPassword()));
         User user=userRepository.insert(usr);
         Map<String, Object> claims = new HashMap<>();
+        claims.put("role",user.getRole().name());
         String token = jwtService.generateToken(user.getUserName(), claims);
         return RegisterUserVTO.builder().token(token).build();
     }
