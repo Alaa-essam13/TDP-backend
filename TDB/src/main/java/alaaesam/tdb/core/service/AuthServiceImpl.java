@@ -56,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
         usr.setPassword(passwordEncoder.encode(registerUserDTO.getPassword()));
         User user=userRepository.insert(usr);
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role",user.getRole().name());
+        claims.put("role",user.getRole());
         String token = jwtService.generateToken(user.getUserName(), claims);
         return RegisterUserVTO.builder().token(token).build();
     }

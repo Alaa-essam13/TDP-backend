@@ -76,7 +76,7 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequest'
 
-  /destinations/{destinationId}:
+  /destinations/approved/{destinationId}:
     get:
       tags:
         - Destination
@@ -194,10 +194,6 @@ components:
         - password
         - email
       properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
         userName:
           type: string
         password:
@@ -206,8 +202,6 @@ components:
         email:
           type: string
           format: email
-        mobileNumber:
-          type: string
 
     LoginUserDTO:
       type: object

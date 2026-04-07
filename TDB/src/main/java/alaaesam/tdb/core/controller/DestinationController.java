@@ -32,17 +32,20 @@ public class DestinationController {
     @Secured("ADMIN")
     public ResponseEntity<Void> approveDestinations(@RequestBody List<DestinationDTO> destinationDTO){
         destinationService.approveDestinations(destinationDTO);
+        for (int i = 0; i <destinationDTO.size(); i++) {
+            System.out.println(destinationDTO.get(i).toString());
+        }
         return ResponseEntity.status(CREATED).build();
     }
 
-    @DeleteMapping("/{destinationId}")
+    @DeleteMapping("/approved/{destinationId}")
     @Secured("ADMIN")
     public ResponseEntity<Void> deleteDestination(@PathVariable("destinationId") Long destinationId){
         destinationService.removeDestination(destinationId);
         return ResponseEntity.status(NO_CONTENT).build();
     }
 
-    @GetMapping("/{destinationId}")
+    @GetMapping("/approved/{destinationId}")
     @Secured({"ADMIN","USER"})
     public ResponseEntity<DestinationVTO> getDestination(@PathVariable("destinationId") Long destinationId){
         return ResponseEntity.ok(destinationService.getDestination(destinationId));
